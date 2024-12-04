@@ -2,27 +2,33 @@ import { Request, Response } from "express";
 import { InjectionModeType } from "awilix"
 import { ExampleService } from "./example.service";
 import { EnvConfigService } from "@src/config";
+import { ExampleRepository } from "@src/infraestructure/example/example.repository";
 
 
 interface Inject {
 	exampleService: ExampleService, 
-	envConfigService: EnvConfigService
+	envConfigService: EnvConfigService,
+	exampleRepository:ExampleRepository
 }
 
 export class ExampleController {
 	private exampleSrv: ExampleService;
 	private envConfigService: EnvConfigService;
+	private exampleRepository: ExampleRepository;
+
 
 	constructor(
-		{ exampleService,envConfigService }:Inject		
+		{ exampleService,envConfigService, exampleRepository }:Inject		
 	) {
 		this.exampleSrv = exampleService;
-		this.envConfigService = envConfigService
+		this.envConfigService = envConfigService;
+		this.exampleRepository = exampleRepository
 	}
 
-	getAllExample = (_req: Request, res: Response) => {
+	getAllExample = async (_req: Request, res: Response) => {
 		console.log("Config srv", this.envConfigService.port)
 		const message = this.exampleSrv.getAllExample();
-		return res.json(message);
+		const usuarios = await this.exampleRepository.getUsuarios()
+		return res.json(usuarios);
 	};
 }

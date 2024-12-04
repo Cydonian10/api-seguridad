@@ -1,2 +1,2 @@
-export * from "./dependencies";
+export * from "../dependencies";
 export * from "./envs.plugin";
