@@ -1,5 +1,10 @@
+import { Menu } from "../menu/menu.model";
+import { Permiso } from "../permiso/permiso.model";
+
 export interface Rol {
     id: number,
     titulo: string,
-    estado: boolean
+
+    permisos: Permiso[]
+    menus: Menu[]
 }

@@ -5,6 +5,8 @@ import { EnvConfigService } from "./config/envs.plugin";
 import { CertificateReader } from "./config/certificado.plugin";
 import { DatabasePool } from "./data/init";
 import { ExampleRepository } from "./infraestructure/example/example.repository";
+import { PermisoRespository } from "./infraestructure/permiso/permiso.repository";
+import { PermisoController } from "./presentation/permiso/permiso.controller";
 
 export const container = awilix.createContainer();
 
@@ -13,8 +15,8 @@ container.register({
 	 * Repositorios
 	 */
 	exampleRepository: awilix.asClass(ExampleRepository).transient(),
-
-
+	permisoRespository: awilix.asClass(PermisoRespository).transient()
+,
 	/**
 	 * Servicios
 	*/
@@ -24,7 +26,7 @@ container.register({
 	 * Controladores
 	*/
 	exampleController: awilix.asClass(ExampleController).transient(),
-
+	permisoController: awilix.asClass(PermisoController).transient(),
 	/**
 	 * Plugins
 	*/

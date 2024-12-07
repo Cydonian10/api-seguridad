@@ -1,0 +1,19 @@
+import { Menu } from "@src/domain/menu/menu.model";
+import { Sistema } from "@src/domain/sistema/sistema.model";
+import { Modulo } from "../modulo.model";
+
+export interface CreateModuloDTO {
+    titulo: string,
+    descripcion: string,
+    color: string,
+    icon: string,
+
+    sistemaId: Sistema["id"]
+    
+    createMenus: {
+        titulo:string,
+        icon: string,
+        url: string,
+        moduloId: Modulo["id"]
+    }[]
+}
