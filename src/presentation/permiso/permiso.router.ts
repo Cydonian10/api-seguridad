@@ -12,6 +12,9 @@ export class PermisoRoutes {
 
         router.post("/create", permisoController.create);
         router.get("/all", permisoController.getAll);
+        router.get("/:id", permisoController.getOne);
+        router.put("/update/:id", permisoController.update);
+        router.delete("/delete/:id", permisoController.deleteOne);
 
         return router;
     }

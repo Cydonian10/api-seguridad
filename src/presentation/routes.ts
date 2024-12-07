@@ -7,7 +7,7 @@ export class AppRoutes {
 		const router = Router();
 
 		router.use("/api/example", ExampleRoutes.routes);
-		router.use("/api/permisos", PermisoRoutes.routes)
+		router.use("/api/permisos", PermisoRoutes.routes);
 		return router;
 	}
 }

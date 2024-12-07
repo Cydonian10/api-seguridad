@@ -1,4 +1,5 @@
 import { CreatePermisoDto } from "@src/domain/permiso/dtos/create-permiso.dto";
+import { UpdatePermisoDto } from "@src/domain/permiso/dtos/update-permiso.dto";
 import { PermisoRespository } from "@src/infraestructure/permiso/permiso.repository";
 import { Request, Response } from "express";
 
@@ -48,6 +49,72 @@ export class PermisoController {
                 message: er.code
             }) 
         }
+    }
 
+    update = async (req: Request, res: Response) => {
+        const updateDTO = req.body as UpdatePermisoDto
+        const permisoId = req.params.id
+        try {
+            const { message, id } = await this.permisoRespository.update(updateDTO, +permisoId!)
+
+            res.status(200).json({
+                message,
+                id
+            })
+        } catch (error) {
+            const er = error as unknown as any
+            res.status(500).json({
+                error: "Error en el servidor",
+                message: er.code
+            }) 
+        }
+    }
+
+    getOne = async (req: Request, res: Response) => {
+        const permisoId = req.params.id
+        try {
+            const permiso = await this.permisoRespository.getOne(+permisoId!)
+
+            if(!permiso)
+                return res.status(400).json({
+                    message: "Permiso no encontrado",
+                })
+
+            res.status(200).json({
+                message: "Obteniendo un permiso",
+                data: permiso
+            })
+        } catch (error) {
+            const er = error as unknown as any
+            res.status(500).json({
+                error: "Error en el servidor",
+                message: er.code
+            })
+        }
+    }
+
+    deleteOne = async (req: Request, res: Response) => {
+        const permisoId = req.params.id
+        try {
+            const permiso = await this.permisoRespository.getOne(+permisoId!)
+
+            if (!permiso)
+                return res.status(400).json({
+                    message: "Permiso no encontrado",
+            })
+
+            const { message, id } = await this.permisoRespository.delete(+permisoId)
+
+            res.status(200).json({
+                message,
+                data: id
+            })
+        } catch (error) {
+            const er = error as unknown as any
+            res.status(500).json({
+                error: "Error en el servidor",
+                message: er.code
+            })
+        }
     }
 }

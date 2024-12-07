@@ -1,9 +1,10 @@
 import { DatabasePool } from "@src/data/init";
 import { OperationResult, OperationResultRaw, toOperationResult } from "@src/domain/operationResult/operationResult.model";
 import { CreatePermisoDto } from "@src/domain/permiso/dtos/create-permiso.dto";
+import { UpdatePermisoDto } from "@src/domain/permiso/dtos/update-permiso.dto";
 import { Permiso } from "@src/domain/permiso/permiso.model";
 import { IPermisoRepository } from "@src/domain/permiso/permiso.repository";
-import { VarChar } from "mssql";
+import { Int, VarChar } from "mssql";
 
 interface Inject {
     databasePool: DatabasePool
@@ -40,8 +41,23 @@ export class PermisoRespository implements IPermisoRepository {
 
         return  toOperationResult(recordset[0])
     };
-    update = (): OperationResult => {
-        throw new Error("No implementado")
+    update = async (updateDTO: UpdatePermisoDto, id:Permiso["id"]): Promise<OperationResult> => {
+        const { titulo } = updateDTO
+        const pool = await this.databasePool.getPool()
+        const request = pool.request()
+
+        request.input("permisoId", Int, id)
+               .input("titulo",VarChar(50), titulo)
+
+        const { recordset } = await request.query<OperationResultRaw>(`
+            UPDATE Permisos SET
+                Titulo =  @titulo
+                WHERE Id = @permisoId
+
+            SELECT @permisoId AS Id, 'Updated successful' AS Message;
+        `)
+
+        return toOperationResult(recordset[0])
     };
     
     getAll = async (): Promise<Permiso[]> => {
@@ -49,13 +65,36 @@ export class PermisoRespository implements IPermisoRepository {
         const request = pool.request()
 
         const { recordset } = await request.query<Permiso>(`
-            SELECT Id id, Titulo titulo FROM Permisos    
+            SELECT Id id, Titulo titulo FROM Permisos WHERE Estado = 1 
         `)
         return recordset
     };
 
-    getOne = (rolId: Permiso["id"]): Promise<Permiso> => {
-        throw new Error("No implementado")
+    getOne = async (id: Permiso["id"]): Promise<Permiso> => {
+        const pool = await this.databasePool.getPool()
+        const request = pool.request()
+        request.input("permisoId", Int, id)
+
+        const {recordset } = await request.query<Permiso>(`
+            SELECT Id id, Titulo titulo FROM Permisos
+                WHERE Id = @permisoId and Estado = 1
+        `)
+        return recordset[0]
+    };
+
+    delete = async (id: Permiso["id"]): Promise<OperationResult> => {
+        const pool = await this.databasePool.getPool()
+        const request = pool.request()
+        request.input("permisoId", Int, id)
+
+        const { recordset } = await request.query<OperationResultRaw>(`
+            UPDATE Permisos SET
+                Estado =  0
+                WHERE Id = @permisoId
+            SELECT @permisoId AS Id, 'Deleted successful' AS Message;
+        `)
+
+        return toOperationResult(recordset[0])
     };
 
 }
