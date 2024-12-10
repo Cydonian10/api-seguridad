@@ -6,7 +6,7 @@ import { UnidadOrganizacional } from "./unidadOrganizacional.model";
 
 export interface IUnidadOrganizacionalRepository {
 	create: (createDTO: CreateUnidadOrganizacionDTO) => Promise<OperationResult>;
-	update: (updateDto: UpdateUnidadOrganizacionDTO) => Promise<OperationResult>;
+	update: (updateDto: UpdateUnidadOrganizacionDTO, id: UnidadOrganizacional["id"]) => Promise<OperationResult>;
 	getAll: () => Promise<UnidadOrganizacional[]>;
 	getOne: (rolId: UnidadOrganizacional["id"]) => Promise<UnidadOrganizacional>;
 	addMenuShow: (configDto: ConfigUnidadOrganizacionalMenu) => Promise<OperationResult>;

@@ -5,5 +5,4 @@ export interface UpdateSistemaDTO {
     url: string,
     imagen: string
 
-    unidadOrganizacionalId: number
 }

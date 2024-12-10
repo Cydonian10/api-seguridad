@@ -1,7 +1,8 @@
 CREATE TABLE [UnidadOrganizacional] (
   [Id] int PRIMARY KEY IDENTITY(1, 1),
-  [cNombre] varchar(255) UNIQUE,
-  [cAbreviatura] char(3) UNIQUE
+  [Nombre] varchar(255) UNIQUE,
+  [Abreviatura] char(3) UNIQUE
+  [Estado] bit DEFAULT 1,
 )
 
 
@@ -14,9 +15,9 @@ CREATE TABLE [UnidadOrganizacionalUsuario] (
 
 CREATE TABLE [UnidadOrganizacionalSistema] (
   [Id] int PRIMARY KEY IDENTITY(1, 1),
-  [UnidadOrganizacionalId] int UNIQUE,
-  [SistemaId] int UNIQUE,
-  [Estado] bit
+  [UnidadOrganizacionalId] int,
+  [SistemaId] int,
+  [Estado] bit DEFAULT 1,
 )
 
 
@@ -24,7 +25,7 @@ CREATE TABLE [MostrarMenu] (
   [Id] int PRIMARY KEY IDENTITY(1, 1),
   [UnidadOrganizacionalId] int UNIQUE,
   [MenuId] int UNIQUE,
-  [Estado] bit
+  [Estado] bit DEFAULT 1,
 )
 
 
@@ -36,7 +37,7 @@ CREATE TABLE [Usuario] (
   [Correo] nvarchar(255) UNIQUE,
   [Password] varchar(100),
   [Imagen] varchar(MAX),
-  [Estado] bit,
+  [Estado] bit DEFAULT 1,
   [TokenRecuperacion] varchar(MAX)
 )
 
@@ -47,14 +48,14 @@ CREATE TABLE [UsuarioRol] (
   [UsuarioId] int UNIQUE,
   [FechaAsigancion] datetime,
   [Expiracion] datetime,
-  [Estado] bit
+  [Estado] bit DEFAULT 1,
 )
 
 
 CREATE TABLE [Rol] (
   [Id] int PRIMARY KEY IDENTITY(1, 1),
   [Titulo] varchar(50),
-  [Estado] bit
+  [Estado] bit DEFAULT 1,
 )
 
 
@@ -68,7 +69,7 @@ CREATE TABLE [RolPermisos] (
 CREATE TABLE [Permisos] (
   [Id] int PRIMARY KEY IDENTITY(1, 1),
   [Titulo] varchar(50),
-  [Estado] bit
+  [Estado] bit DEFAULT 1,
 )
 
 
@@ -78,7 +79,7 @@ CREATE TABLE [Sistema] (
   [Descripcion] varchar(MAX),
   [Color] varchar(50),
   [Url] varchar(MAX),
-  [Estado] bit,
+  [Estado] bit DEFAULT 1,
   [Imagen] varchar(MAX)
 )
 
@@ -89,7 +90,7 @@ CREATE TABLE [Modulo] (
   [Descripcion] varchar(MAX),
   [Color] varchar(50),
   [Icon] varchar(50),
-  [Estado] bit,
+  [Estado] bit DEFAULT 1,
   [SistemaId] int
 )
 
@@ -99,7 +100,7 @@ CREATE TABLE [Menu] (
   [Titulo] varchar(100),
   [Icon] varchar(50),
   [Url] varchar(MAX),
-  [Estado] bit,
+  [Estado] bit DEFAULT 1,
   [ModuloId] int
 )
 
@@ -109,7 +110,7 @@ CREATE TABLE [ConfigMenuRol] (
   [MenuId] int UNIQUE,
   [RolId] int UNIQUE,
   [Activo] bit,
-  [Estado] bit
+  [Estado] bit DEFAULT 1
 )
 
 
@@ -146,10 +147,10 @@ ALTER TABLE [UnidadOrganizacionalUsuario] ADD FOREIGN KEY ([Id]) REFERENCES [Usu
 ALTER TABLE [UnidadOrganizacionalSistema] ADD FOREIGN KEY ([UnidadOrganizacionalId]) REFERENCES [UnidadOrganizacional] ([Id])
 
 
-ALTER TABLE [Sistema] ADD FOREIGN KEY ([Id]) REFERENCES [UnidadOrganizacionalSistema] ([SistemaId])
-
-
 ALTER TABLE [MostrarMenu] ADD FOREIGN KEY ([Id]) REFERENCES [UnidadOrganizacionalSistema] ([Id])
 
 
 ALTER TABLE [MostrarMenu] ADD FOREIGN KEY ([MenuId]) REFERENCES [Menu] ([Id])
+
+
+ALTER TABLE [UnidadOrganizacionalSistema] ADD FOREIGN KEY ([SistemaId]) REFERENCES [Sistema] ([Id])

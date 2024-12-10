@@ -9,6 +9,8 @@ import { PermisoRespository } from "./infraestructure/permiso/permiso.repository
 import { PermisoController } from "./presentation/permiso/permiso.controller";
 import { UnidadOrganizacionalRepository } from "./infraestructure/unidadOrganizacional/unidadOrganizacional.repository";
 import { UnidadOrganizacionalController } from "./presentation/unidadOrganizacional/unidadOrganizacional.controller";
+import { SistemaRepository } from "./infraestructure/sistema/sistema.repository";
+import { SistemaController } from "./presentation/sistema/sistema.controller";
 
 export const container = awilix.createContainer();
 
@@ -19,6 +21,7 @@ container.register({
 	exampleRepository: awilix.asClass(ExampleRepository).transient(),
 	permisoRespository: awilix.asClass(PermisoRespository).transient(),
 	unidadOrganizacionalRepository: awilix.asClass(UnidadOrganizacionalRepository).transient(),
+	sistemaRepository: awilix.asClass(SistemaRepository).transient(),
 
 	/**
 	 * Servicios
@@ -32,6 +35,7 @@ container.register({
 	exampleController: awilix.asClass(ExampleController).transient(),
 	permisoController: awilix.asClass(PermisoController).transient(),
 	unidadOrganizacionalController: awilix.asClass(UnidadOrganizacionalController).transient(),
+	sistemaController: awilix.asClass(SistemaController).transient(),
 
 	/**
 	 * Plugins

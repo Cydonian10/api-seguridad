@@ -1,14 +1,20 @@
-import { OperationResult } from "../operationResult/operationResult.model"
-import { CreateUnidadOrganizacionDTO } from "../unidadOrganizacional/dtos/create-unidadOrganizacional.dto"
-import { UnidadOrganizacional } from "../unidadOrganizacional/unidadOrganizacional.model"
-import { UpdateSistemaDTO } from "./dtos/update-sistema.dto"
-import { Sistema } from "./sistema.model"
+import { OperationResult } from "../operationResult/operationResult.model";
+import { UnidadOrganizacional } from "../unidadOrganizacional/unidadOrganizacional.model";
+import { CreateSistemaDTO } from "./dtos/create-sistema.dto";
+import { UpdateSistemaDTO } from "./dtos/update-sistema.dto";
+import { Sistema } from "./sistema.model";
 
-export interface IRolRepository {
-    create: (createDTO: CreateUnidadOrganizacionDTO) => OperationResult
-    update: (updateDto: UpdateSistemaDTO) => OperationResult
-    eliminarUnidadOrganizacionDeSistema: (sistemaId: Sistema["id"], unidadOrganizacionalId: UnidadOrganizacional["id"]) => OperationResult
-    addUnidadOrganizativaASistema: (sistemaId: Sistema["id"], unidadOrganizacionalId: UnidadOrganizacional["id"]) => OperationResult
-    getAll: () => Sistema[]
-    getOne: (rolId: number) => Sistema
+export interface ISistemaRepository {
+	create: (createDTO: CreateSistemaDTO) => Promise<OperationResult>;
+	update: (updateDto: UpdateSistemaDTO, sistemaId: Sistema["id"]) => Promise<OperationResult>;
+	eliminarUnidadOrganizacionDeSistema: (
+		sistemaId: Sistema["id"],
+		unidadOrganizacionalId: UnidadOrganizacional["id"]
+	) => Promise<OperationResult>;
+	addUnidadOrganizativaASistema: (
+		sistemaId: Sistema["id"],
+		unidadOrganizacionalId: UnidadOrganizacional["id"]
+	) => Promise<OperationResult>;
+	getAll: () => Promise<Sistema[]>;
+	getOne: (rolId: number) => Promise<Sistema>;
 }

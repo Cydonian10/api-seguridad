@@ -1,7 +1,7 @@
-import { ConnectionPool, Request, config as SQLConfig } from "mssql";
+import { ConnectionPool, Request, config as SQLConfig, Transaction } from "mssql";
 
 export class DatabasePool {
-	private pool: ConnectionPool | null = null;
+	public pool: ConnectionPool | null = null;
 	private readonly config: SQLConfig = {
 		user: "sa",
 		password: "TuPassword123",
@@ -18,8 +18,8 @@ export class DatabasePool {
 		if (!this.pool) {
 			try {
 				this.pool = new ConnectionPool(this.config);
-				return (await this.pool.connect()).request();
 				console.log("Conexión al pool establecida.");
+				return (await this.pool.connect()).request();
 			} catch (error) {
 				console.error("Error al conectar al pool:", error);
 				throw error;
@@ -38,6 +38,25 @@ export class DatabasePool {
 				console.error("Error al cerrar el pool:", error);
 				throw error;
 			}
+		}
+	}
+
+	public async beginTransaction(): Promise<{ transaction: Transaction; request: Request }> {
+		if (!this.pool) {
+			await this.getPool(); // Asegúrate de que el pool esté disponible
+		}
+
+		const transaction = new Transaction(this.pool!);
+		try {
+			await transaction.begin();
+			console.log("Transacción iniciada.");
+			return {
+				transaction,
+				request: transaction.request(),
+			};
+		} catch (error) {
+			console.error("Error al iniciar la transacción:", error);
+			throw error;
 		}
 	}
 }
