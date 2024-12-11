@@ -1,4 +1,4 @@
-import { Modulo } from "@src/domain/modulo/models/modulo.model";
+import { Modulo } from "@src/domain/modulo/modulo.model";
 import { UnidadOrganizacional } from "@src/domain/unidadOrganizacional/unidadOrganizacional.model";
 
 export interface SistemaDetalleRawSql {

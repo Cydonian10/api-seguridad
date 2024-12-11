@@ -1,4 +1,4 @@
-import { Modulo } from "../modulo/models/modulo.model";
+import { Modulo } from "../modulo/modulo.model";
 import { Sistema } from "../sistema/models/sistema.model";
 
 export interface Menu {
@@ -7,6 +7,6 @@ export interface Menu {
     icon : string,
     url : string,
     
-    modulo: Modulo
-    sistema: Sistema []
+    modulo?: Modulo
+    sistema?: Sistema []
 }
