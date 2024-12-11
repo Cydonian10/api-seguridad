@@ -10,7 +10,7 @@ FROM sys.foreign_keys;
 EXEC sp_executesql @sql;
 ------------------------------------------------
 -- 2. Eliminar tablas
-DECLARE @sql NVARCHAR(MAX) = '';
+--DECLARE @sql NVARCHAR(MAX) = '';
 
 SET @sql = '';
 

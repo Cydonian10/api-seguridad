@@ -1,5 +1,5 @@
 import { Modulo } from "../modulo/modulo.model";
-import { Sistema } from "../sistema/sistema.model";
+import { Sistema } from "../sistema/models/sistema.model";
 
 export interface Menu {
     id : number,

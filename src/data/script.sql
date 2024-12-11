@@ -1,7 +1,7 @@
 CREATE TABLE [UnidadOrganizacional] (
   [Id] int PRIMARY KEY IDENTITY(1, 1),
   [Nombre] varchar(255) UNIQUE,
-  [Abreviatura] char(3) UNIQUE
+  [Abreviatura] char(3) UNIQUE,
   [Estado] bit DEFAULT 1,
 )
 

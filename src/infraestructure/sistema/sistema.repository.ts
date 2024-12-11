@@ -2,10 +2,11 @@ import { ISistemaRepository } from "@src/domain/sistema/sistema.repository";
 import { DatabasePool } from "../../data/init";
 import { OperationResult, OperationResultRaw, toOperationResult } from "@src/domain/operationResult/operationResult.model";
 import { UpdateSistemaDTO } from "@src/domain/sistema/dtos/update-sistema.dto";
-import { Sistema } from "@src/domain/sistema/sistema.model";
+import { Sistema, SistemaRawSql, toSistema } from "@src/domain/sistema/models/sistema.model";
 import { UnidadOrganizacional } from "@src/domain/unidadOrganizacional/unidadOrganizacional.model";
 import { CreateSistemaDTO } from "@src/domain/sistema/dtos/create-sistema.dto";
 import { Int, MAX, Table, Transaction, VarChar } from "mssql";
+import { SistemaDetalle, SistemaDetalleRawSql, toSistemaDetalle } from "@src/domain/sistema/models/sistema-detalle.model";
 interface Inject {
 	databasePool: DatabasePool;
 }
@@ -19,7 +20,6 @@ export class SistemaRepository implements ISistemaRepository {
 		const { color, descripcion, imagen, titulo, url , unidadOrganizacionalIds } = createDTO;
 
 		try {
-      console.log({createDTO});
 		  const { transaction, request } = await this.databasePool.beginTransaction();
 
 			try {
@@ -102,18 +102,107 @@ export class SistemaRepository implements ISistemaRepository {
 		sistemaId: Sistema["id"],
 		unidadOrganizacionalId: UnidadOrganizacional["id"]
 	): Promise<OperationResult> => {
-		throw new Error("Not implementation");
+		const request = await this.databasePool.getPool()
+
+		const { recordset } = await request.input("sistemaId", Int, sistemaId)
+			.input("unidadOrganizacionalId", Int, unidadOrganizacionalId)
+				.query<OperationResultRaw>(`
+				DECLARE @registroId INT;
+				SELECT @registroId = Id FROM UnidadOrganizacionalSistema
+						WHERE SistemaId = @sistemaId AND UnidadOrganizacionalId = @unidadOrganizacionalId
+
+				IF @registroId IS NOT NULL	
+				BEGIN
+					DELETE FROM UnidadOrganizacionalSistema
+    				WHERE Id = @RegistroId;
+				END	
+
+				SELECT @registroId AS Id, 'Update sistema successful' AS Message;
+			`)
+
+		return toOperationResult(recordset[0])
+		
 	};
 	addUnidadOrganizativaASistema = async (
 		sistemaId: Sistema["id"],
 		unidadOrganizacionalId: UnidadOrganizacional["id"]
 	): Promise<OperationResult> => {
-		throw new Error("Not implementation");
+		const request = await this.databasePool.getPool()
+
+		const { recordset } = await request.input("sistemaId", Int, sistemaId)
+			.input("unidadOrganizacionalId",Int, unidadOrganizacionalId)
+			.query(`
+				IF NOT EXISTS(
+					SELECT 1 FROM UnidadOrganizacionalSistema
+						WHERE SistemaId = @sistemaId AND UnidadOrganizacionalId = @unidadOrganizacionalId
+				)		
+				BEGIN
+					INSERT INTO UnidadOrganizacionalSistema (UnidadOrganizacionalId, SistemaId)
+						VALUES (@unidadOrganizacionalId, @sistemaId)
+					
+					SELECT @sistemaId AS Id, 'Insert unidadOrganizacional listo' AS Message;
+				END
+
+				SELECT @sistemaId AS Id, 'Unidad organizativa ya existe en sistema' AS Message;
+
+			`)
+		return toOperationResult(recordset[0])
+
 	};
 	getAll = async (): Promise<Sistema[]> => {
-		throw new Error("Not implementation");
+		const request = await this.databasePool.getPool()
+		const { recordset } = await request.query<SistemaRawSql>(`
+			SELECT 
+				s.Id id,
+				s.Titulo titulo,
+				s.Descripcion descripcion,
+				s.Color color,
+				s.Url url,
+				s.Imagen imagen,
+				COUNT(mo.Id) AS totalModulos
+			FROM Sistema s
+			INNER JOIN Modulo mo on mo.SistemaId = s.Id 
+			GROUP BY 
+				s.Id, 
+				s.Titulo, 
+				s.Descripcion, 
+				s.Color, 
+				s.Url, 
+				s.Estado, 
+				s.Imagen;
+		`)
+		return recordset.map((rawSql) => toSistema(rawSql))
 	};
-	getOne = async (rolId: number): Promise<Sistema> => {
-		throw new Error("Not implementation");
+	getOne = async (sistemaId: number): Promise<SistemaDetalle> => {
+		const request = await this.databasePool.getPool()
+		const { recordset } = await request
+		.input("sistemaId",Int, sistemaId)
+		.query<SistemaDetalleRawSql>(`
+			SELECT 
+				s.id id,
+				s.Titulo titulo,
+				s.Descripcion  descripcion,
+				s.Imagen imagen,
+				s.Url url,
+				s.Color color,
+				
+				uo.Id unidadOrganizacionalId,
+				uo.Nombre unidadOrganizacionlNombre,
+				uo.Abreviatura unidadOrganizacionalAbreviatura,
+				
+				m.Id moduloId,
+				m.Titulo moduloTitulo,
+				m.Descripcion moduloDescripcion,
+				m.Color moduloColor,
+				m.Icon moduloIcon
+			FROM
+				Sistema s 
+			inner join UnidadOrganizacional uo on uo.Id  = s.Id 
+			INNER JOIN Modulo m ON m.SistemaId  = s.Id 
+			WHERE s.Id = @sistemaId
+	
+		`)
+
+		return toSistemaDetalle(recordset[0])
 	};
 }

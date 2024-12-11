@@ -1,5 +1,5 @@
 import { OperationResult } from "../operationResult/operationResult.model"
-import { Sistema } from "../sistema/sistema.model"
+import { Sistema } from "../sistema/models/sistema.model"
 import { CreateModuloDTO } from "./dtos/create-modulo.dto"
 import { UpdateModuloDTO } from "./dtos/update-modulo.dto"
 

@@ -1,5 +1,5 @@
 import { Menu } from "@src/domain/menu/menu.model";
-import { Sistema } from "@src/domain/sistema/sistema.model";
+import { Sistema } from "@src/domain/sistema/models/sistema.model";
 import { Modulo } from "../modulo.model";
 
 export interface CreateModuloDTO {

@@ -1,4 +1,4 @@
-import { Sistema } from "@src/domain/sistema/sistema.model";
+import { Sistema } from "@src/domain/sistema/models/sistema.model";
 
 export interface UpdateModuloDTO {
     titulo: string,
