@@ -5,6 +5,6 @@ export interface UnidadOrganizacional {
 	id: number;
 	nombre: string;
 	abreviatura: string;
-	usuarios: Usuario[];
-	menus: Menu[];
+	usuarios?: Usuario[];
+	menus?: Menu[];
 }

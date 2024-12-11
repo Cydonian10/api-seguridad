@@ -1,4 +1,4 @@
-import { Modulo } from "@src/domain/modulo/modulo.model";
+import { Modulo } from "@src/domain/modulo/models/modulo.model";
 import { UnidadOrganizacional } from "@src/domain/unidadOrganizacional/unidadOrganizacional.model";
 
 export interface SistemaDetalleRawSql {
@@ -55,7 +55,7 @@ export const toSistemaDetalle = (rawSql: SistemaDetalleRawSql): SistemaDetalle =
             descripcion: rawSql.moduloDescripcion,
             color: rawSql.moduloColor,
             icon: rawSql.moduloIcon,
-            menus: []
+            totalMenus: undefined
         });
     }
 
@@ -64,8 +64,8 @@ export const toSistemaDetalle = (rawSql: SistemaDetalleRawSql): SistemaDetalle =
             id: rawSql.unidadOrganizacionalId,
             nombre: rawSql.unidadOrganizacionlNombre,
             abreviatura: rawSql.unidadOrganizacionalAbreviatura,
-            menus: [],
-            usuarios: []
+            menus: undefined,
+            usuarios: undefined
         });
     }
 
