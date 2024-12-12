@@ -30,10 +30,10 @@ export class SistemaRepository implements ISistemaRepository {
 					.input("imagen", VarChar(MAX), imagen)
 					.input("url", VarChar(MAX), url)
 					.input("titulo", VarChar(100), titulo).query<OperationResultRaw>(`
-            INSERT INTO Sistema (Color, Descripcion, Imagen, Titulo, Url)
-              VALUES (@color, @descripcion, @imagen, @titulo ,@url)
-            SELECT SCOPE_IDENTITY() AS Id, 'Insert successful' AS Message;
-          `);
+						INSERT INTO Sistema (Color, Descripcion, Imagen, Titulo, Url)
+						VALUES (@color, @descripcion, @imagen, @titulo ,@url)
+						SELECT SCOPE_IDENTITY() AS Id, 'Insert successful' AS Message;
+					`);
 				const { id:sistemaId } = toOperationResult(recordset[0]);
 
 

@@ -2,6 +2,12 @@ import { Menu } from "../menu/menu.model"
 import { Sistema } from "../sistema/models/sistema.model"
 
 export interface ModuloRawSql {
+    id: number,
+    titulo: string,
+    descripcion: string,
+    color: string,
+    icon: string,
+    menusTotales: number,
 }
 
 export interface Modulo {
@@ -16,13 +22,14 @@ export interface Modulo {
     sistema?: Sistema
 }
 
-export const toModulo = (rawSql: ModuloRawSql): Modulo => {
+export const toModuloSimple = (rawSql: ModuloRawSql): Modulo => {
+    const { id, titulo, descripcion, color, icon, menusTotales } = rawSql
     return {
-        id: 1,
-        titulo: "asdf",
-        descripcion: "adf",
-        color: "asdf",
-        icon: "adf",
-        totalMenus: 1,        
+        id,
+        titulo,
+        descripcion,
+        color,
+        icon,
+        totalMenus: menusTotales,        
     }
 }
