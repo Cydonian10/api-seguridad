@@ -90,7 +90,31 @@ export class MenuRepository implements IMenuRepository {
         return toOperationResult(recordset[0]);
 
     };
-    mostrarMenu = (mostrarMenuDTO: MostrarMenuDTO) : Promise<OperationResult> => {
-        throw new Error("Not implementation")
+    mostrarMenu = async (mostrarMenuDTO: MostrarMenuDTO) : Promise<OperationResult> => {
+        const { menuId, unidadOrganizativaId } = mostrarMenuDTO
+        const request = await this.databasePool.getPool();
+
+        const { recordset } = await request
+            .input("menuId", Int, menuId)
+            .input("unidadOrganizativaId", Int, unidadOrganizativaId)
+            .query<OperationResultRaw>(`
+            DECLARE @mostrarMenuId INT
+
+            SELECT @mostrarMenuId = Id  FROM MostrarMenu mm 
+                WHERE MenuId = 1 and UnidadOrganizacionalId = 1
+
+            IF @mostrarMenuId IS NOT NULL
+            BEGIN
+                UPDATE MostrarMenu SET
+                    Estado = CASE Estado WHEN 1 THEN 0 ELSE 1 END
+                WHERE Id = @mostrarMenuId;
+            END
+            ELSE
+            BEGIN
+                INSERT MostrarMenu (MenuId, UnidadOrganizacionalId, Estado)
+                    VALUES (1, 1, 1);
+            END
+        `)
+        return toOperationResult(recordset[0]);
     };
 }
