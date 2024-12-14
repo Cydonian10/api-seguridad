@@ -11,10 +11,10 @@ export interface Sistema {
     id: number,
     titulo: string,
     descripcion: string,
-    color: string,
+    color?: string,
     url: string,
-    imagen: string,
-    totalModulos: number,
+    imagen?: string,
+    totalModulos?: number,
 }
 
 export const toSistema = (rawSql: SistemaRawSql): Sistema => {

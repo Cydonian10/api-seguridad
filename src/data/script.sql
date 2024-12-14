@@ -94,6 +94,13 @@ CREATE TABLE [Modulo] (
   [SistemaId] int
 )
 
+CREATE TYPE TipoTabla AS TABLE
+(
+    [titulo] VARCHAR(100),
+    [icon] VARCHAR(50),
+    [url] VARCHAR(MAX)
+);
+
 
 CREATE TABLE [Menu] (
   [Id] int PRIMARY KEY IDENTITY(1, 1),

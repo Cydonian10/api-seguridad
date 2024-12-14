@@ -10,10 +10,10 @@ export class ModuloRoutes {
         const router = Router();
         const moduloController = container.resolve<ModuloController>("moduloController");
 
-        router.post("/create", );
+        router.post("/create", moduloController.create);
         router.get("/all", moduloController.all);
-        router.get("/:id");
-        router.put("/update/:id");
+        router.get("/:id", moduloController.getOne);
+        router.put("/update/:id", moduloController.update);
         router.delete("/delete/:id");
 
         return router;

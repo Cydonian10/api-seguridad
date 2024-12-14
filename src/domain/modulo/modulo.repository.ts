@@ -7,7 +7,7 @@ import { Modulo } from "./modulo.model"
 
 export interface IModuloRepository {
     create: (createDTO: CreateModuloDTO) => Promise<OperationResult>
-    update: (updateDTO: UpdateModuloDTO) => Promise<OperationResult>
+    update: (updateDTO: UpdateModuloDTO, moduloId:number) => Promise<OperationResult>
     getAll: (filterDTO: FilterModuloDTO) => Promise<Modulo[]>
     getOne: (moduloId: Modulo['id']) => Promise<Modulo>
 }
