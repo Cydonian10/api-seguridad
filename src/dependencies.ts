@@ -13,6 +13,8 @@ import { SistemaRepository } from "./infraestructure/sistema/sistema.repository"
 import { SistemaController } from "./presentation/sistema/sistema.controller";
 import { ModuloRepository } from "./infraestructure/modulo/modulo.repository";
 import { ModuloController } from "./presentation/modulo/modulo.controller";
+import { MenuRepository } from "./infraestructure/menu/menu.repository";
+import { MenuController } from "./presentation/menu/menu.controller";
 
 export const container = awilix.createContainer();
 
@@ -25,6 +27,7 @@ container.register({
 	unidadOrganizacionalRepository: awilix.asClass(UnidadOrganizacionalRepository).transient(),
 	sistemaRepository: awilix.asClass(SistemaRepository).transient(),
 	moduloRepository: awilix.asClass(ModuloRepository).transient(),
+	menuRepository: awilix.asClass(MenuRepository).transient(),
 
 	/**
 	 * Servicios
@@ -40,6 +43,7 @@ container.register({
 	unidadOrganizacionalController: awilix.asClass(UnidadOrganizacionalController).transient(),
 	sistemaController: awilix.asClass(SistemaController).transient(),
 	moduloController: awilix.asClass(ModuloController).transient(),
+	menuController: awilix.asClass(MenuController).transient(),
 
 	/**
 	 * Plugins

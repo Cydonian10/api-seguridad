@@ -7,11 +7,14 @@ import { UpdateMenuDTO } from "./dtos/update-menu.dto"
 import { Menu } from "./menu.model"
 
 export interface IMenuRepository {
-    create: (createDTO: CreateMenuDTO) => Promise<OperationResult>
-    update: (updateDTO: UpdateMenuDTO, moduloId: number) => Promise<OperationResult>
-    getAll: (filterDTO: FilterMenuDTO) => Promise<Menu[]>
-    getOne: (moduloId: Menu['id']) => Promise<Menu>
+	create: (createDTO: CreateMenuDTO) => Promise<OperationResult>;
+	update: (updateDTO: UpdateMenuDTO, moduloId: number) => Promise<OperationResult>;
+	getAll: (filterDTO: FilterMenuDTO) => Promise<Menu[]>;
+	getOne: (moduloId: Menu["id"]) => Promise<Menu>;
 
-    configurarMenu: (configurarDTO: ConfigurateMenuDTO) => Promise<OperationResult>,
-    mostrarMenu: (mostrarMenuDTO: MostrarMenuDTO) => Promise<OperationResult>
+	configurarMenuRol: (configurarDTO: ConfigurateMenuDTO) => Promise<OperationResult>;
+	configurarMostrarMenu: (mostrarMenuDTO: MostrarMenuDTO) => Promise<OperationResult>;
+
+	getMenuRol: (moduloId: number, rolId: number) => Promise<Menu[]>;
+	getMostrarMenuUnidadOrganizacional: (moduloId: number, unidadOrganizacionalId: number) => Promise<Menu[]>;
 }

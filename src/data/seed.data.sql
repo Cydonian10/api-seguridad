@@ -86,7 +86,8 @@ INSERT INTO Menu (Titulo, Icon, Url, Estado, ModuloId) VALUES
 ('Reportes', 'report', '/reportes', 1, 2),
 ('Campañas', 'campaign', '/campanas', 1, 3),
 ('Transporte', 'transport', '/transporte', 1, 4),
-('Empleados', 'employee', '/empleados', 1, 5);
+('Empleados', 'employee', '/empleados', 1, 5),
+('Prueba', 'fa-prueba','/prueba', 1, 1);
 
 
 -- MostrarMenu
@@ -103,4 +104,5 @@ INSERT INTO ConfigMenuRol (MenuId, RolId, Activo, Estado) VALUES
 (2, 2, 1, 1),
 (3, 3, 1, 1),
 (4, 4, 1, 1),
-(5, 5, 1, 1);
+(5, 5, 1, 1),
+(6, 1, 1, 1);
