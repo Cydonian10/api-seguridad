@@ -5,6 +5,7 @@ import { UnidadOrganizacionalRoutes } from "./unidadOrganizacional/unidadOrganiz
 import { SistemaRoutes } from "./sistema/sistema.router";
 import { ModuloRoutes } from "./modulo/modulo.router";
 import { MenuRoutes } from "./menu/menu.router";
+import { UsuarioRoutes } from "./usuario/usuario.router";
 
 export class AppRoutes {
 	static get routes(): Router {
@@ -16,6 +17,7 @@ export class AppRoutes {
 		router.use("/api/sistemas", SistemaRoutes.routes);
 		router.use("/api/modulos", ModuloRoutes.routes);
 		router.use("/api/menus", MenuRoutes.routes);
+		router.use("/api/usuarios", UsuarioRoutes.routes);
 		return router;
 	}
 }
