@@ -5,7 +5,7 @@ import { UpdateSistemaDTO } from "@src/domain/sistema/dtos/update-sistema.dto";
 import { Sistema, SistemaRawSql, toSistema } from "@src/domain/sistema/models/sistema.model";
 import { UnidadOrganizacional } from "@src/domain/unidadOrganizacional/unidadOrganizacional.model";
 import { CreateSistemaDTO } from "@src/domain/sistema/dtos/create-sistema.dto";
-import { Int, MAX, Table, Transaction, VarChar } from "mssql";
+import { Int, MAX, Table, VarChar } from "mssql";
 import { SistemaDetalle, SistemaDetalleRawSql, toSistemaDetalle } from "@src/domain/sistema/models/sistema-detalle.model";
 interface Inject {
 	databasePool: DatabasePool;
@@ -35,7 +35,6 @@ export class SistemaRepository implements ISistemaRepository {
 						SELECT SCOPE_IDENTITY() AS Id, 'Insert successful' AS Message;
 					`);
 				const { id:sistemaId } = toOperationResult(recordset[0]);
-
 
 				const unidadOrganizacionalTable = new Table("UnidadOrganizacionalTableType");
 				unidadOrganizacionalTable.columns.add("unidadOrganizacionalId", Int);

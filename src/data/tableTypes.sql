@@ -11,3 +11,17 @@ TABLE (
     [icon] VARCHAR(50),
     [url] VARCHAR(MAX)
 );
+
+CREATE
+TYPE RolesUsuarioTableType AS
+TABLE (
+    [titulo] VARCHAR(100),
+    [icon] VARCHAR(50),
+    [url] VARCHAR(MAX)
+);
+
+CREATE
+TYPE UnidadesOrganizativaUsuarioTableType AS
+TABLE (
+    [unidadesOrganizacionalesId] INT
+);
