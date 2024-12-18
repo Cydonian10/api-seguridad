@@ -57,7 +57,7 @@ export class UsuarioController {
     const { roles, unidadOrganizativas } = query
     const filtroDTO = {
       unidadOrganizativas: this.transformToArray(unidadOrganizativas),
-      roles: this.transformToArray(roles)
+      roles: this.transformToArray(roles),
     };
     try {
       const usuarios = await this.usuarioRepository.getAll(filtroDTO)

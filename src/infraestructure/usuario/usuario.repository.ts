@@ -9,7 +9,7 @@ import {
 	UpsertUnidadOrganizativaIdDTO,
 } from "@src/domain/usuario/dtos/update-usuario.dto";
 import { toUsuario, Usuario, UsuarioRawSql } from "@src/domain/usuario/usuario.model";
-import { Date, Int, MAX, Table, VarChar } from "mssql";
+import { Bit, Date, Int, MAX, Table, VarChar } from "mssql";
 interface Inject {
 	databasePool: DatabasePool;
 }
@@ -119,36 +119,45 @@ export class UsuarioRepository implements IUsuarioRepository {
 		throw new Error("Not implementent");
 	};
 	upsertRoles = async (upsertDTO: UpsertUsuarioRolDTO): Promise<OperationResult> => {
-		const { expiracion,fechaAsignacion,idRol, idUsuario } = upsertDTO
+		const { expiracion,fechaAsignacion,idRol, idUsuario,estado } = upsertDTO
+		
 		const request = await this.databasePool.getPool()
+		const { recordset } = await request
+			.input("Expiracion", Date, expiracion)
+			.input("FechaAsignacion", Date, fechaAsignacion)
+			.input("IdRol", Int, idRol)
+			.input("Estado", Bit, estado)
+			.input("IdUsuario", Int, idUsuario)
+			.query<OperationResultRaw>(`
+				DECLARE @UsuarioRolId INT;
 
-		// DECLARE @UsuarioRolId INT;
+				SELECT * FROM UsuarioRol WHERE UsuarioId = @IdUsuario AND RolId = @IdRol
 
-		// SELECT * FROM UsuarioRol WHERE UsuarioId = 1 AND RolId = 1
-
-		// IF @UsuarioId IS NOT NULL
-		// 		begin
-		// 	UPDATE prueba.dbo.UsuarioRol
-		// 		SET
-		// 		FechaAsigancion = COALESCE(@FechaAsignacion, FechaAsigancion),
-		// 			Expiracion = COALESCE(@Expiracion, Expiracion),
-		// 			Estado = COALESCE(@Estado, Estado)
-		// 	WHERE Id = 0;
-		// 		end
-		// else
-		// 	begin
-		// 	INSERT INTO prueba.dbo.UsuarioRol
-		// 		(RolId, UsuarioId, FechaAsigancion, Expiracion, Estado)
-		// 	VALUES(@RolId, @UsuarioId, @FechaAsignacion, @Expiracion, 1);
-		// 	end
-
-		throw new Error("Not implementent");
+				IF @UsuarioRolId IS NOT NULL
+						begin
+					UPDATE prueba.dbo.UsuarioRol
+						SET
+							FechaAsigancion = COALESCE(@FechaAsignacion, FechaAsigancion),
+							Expiracion = COALESCE(@Expiracion, Expiracion),
+							Estado = COALESCE(@Estado, Estado)
+					WHERE Id = @UsuarioRolId;
+						end
+				else
+					BEGIN
+					INSERT INTO prueba.dbo.UsuarioRol
+						(RolId, UsuarioId, FechaAsigancion, Expiracion, Estado)
+					VALUES(@IdRol, @UsuarioId, @FechaAsignacion, @Expiracion, 1);
+					END	
+			    SELECT @IdUsuario AS Id, 'Se agrego rol satisfactoriamente' AS Message;
+			`)
+		
+        return toOperationResult(recordset[0])
 	};
 	upsertUnidadesOrganizativas = (upsertDTO: UpsertUnidadOrganizativaIdDTO): Promise<OperationResult> => {
 		throw new Error("Not implementent");
 	};
 	getAll = async (filtroDTO: FiltroUsuarioDTO): Promise<Usuario[]> => {
-		const { unidadOrganizativas , roles, tipoUsuario } = filtroDTO
+		const { unidadOrganizativas , roles } = filtroDTO
 		const request = await this.databasePool.getPool()
 
 		const unidadesOrganizativaUsuarioTableType = new Table("UnidadesOrganizativaUsuarioTableType")
@@ -188,7 +197,7 @@ export class UsuarioRepository implements IUsuarioRepository {
 					inner join Rol r on ur.RolId = r.Id 
    				WHERE 
 					uou.UnidadOrganizacionalId IN (SELECT unidadesOrganizacionalesId FROM @Unidades) or
-					r.Id IN (SELECT idRol FROM @Roles) or
+					r.Id IN (SELECT idRol FROM @Roles) 
 				GROUP BY u.id,
 					u.Nombre,
 					u.ApellidoMaterno,
