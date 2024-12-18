@@ -9,11 +9,13 @@ export interface UpdateUsuarioDTO {
 }
 
 export interface UpsertUsuarioRolDTO {
+	idUsuario: number,
 	idRol: number;
 	fechaAsignacion: Date;
 	expiracion: Date;
 }
 
 export interface UpsertUnidadOrganizativaIdDTO {
+  idUsuario: number,
   unidadOrganizativaId: number
 }

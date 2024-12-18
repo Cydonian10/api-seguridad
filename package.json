@@ -9,7 +9,8 @@
 		"start": "npm run build && node dist/app.js",
 		"reset": "tsnd ./src/data/scripts/drop.ts",
 		"create": "tsnd ./src/data/scripts/tablas.ts",
-		"seed": "tsnd ./src/data/scripts/seed.ts"
+		"seed": "tsnd ./src/data/scripts/seed.ts",
+		"drop":"npm run reset && npm run create && npm run seed"
 	},
 	"keywords": [],
 	"author": "",

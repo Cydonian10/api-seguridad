@@ -10,10 +10,10 @@ export class UsuarioRoutes {
 		const router = Router();
 		const usuarioController = container.resolve<UsuarioController>("usuarioController");
 
-		router.post("/create");
-		router.get("/all");
+		router.post("/create", usuarioController.create);
+		router.get("/all", usuarioController.getAll);
 		router.get("/:id");
-		router.put("/update/:id");
+		router.put("/update/:id", usuarioController.update);
 		router.delete("/delete/:id");
 
 		return router;

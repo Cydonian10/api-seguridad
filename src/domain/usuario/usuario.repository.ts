@@ -6,10 +6,10 @@ import { Usuario } from "./usuario.model";
 
 export interface IUsuarioRepository {
 	create: (createDTO: CreateUsuarioDTO) => Promise<OperationResult>;
-	update: (updateDTO: UpdateUsuarioDTO) => Promise<OperationResult>;
+	update: (updateDTO: UpdateUsuarioDTO, usuarioId: Usuario["id"]) => Promise<OperationResult>;
 	delete: (idUsuario: Usuario["id"]) => Promise<OperationResult>;
 	upsertRoles: (upsertDTO: UpsertUsuarioRolDTO) => Promise<OperationResult>;
 	upsertUnidadesOrganizativas: (upsertDTO: UpsertUnidadOrganizativaIdDTO) => Promise<OperationResult>;
-  getAll: (filtroDTO: FiltroUsuarioDTO) => Promise<Usuario>
+  getAll: (filtroDTO: FiltroUsuarioDTO) => Promise<Usuario[]>
   detalle: () => Promise<Usuario>
 }

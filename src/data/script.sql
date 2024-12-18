@@ -104,43 +104,43 @@ CREATE TABLE [ConfigMenuRol] (
 )
 
 ALTER TABLE [Modulo]
-ADD FOREIGN KEY ([SistemaId]) REFERENCES [Sistema] ([Id])
+ADD FOREIGN KEY ([SistemaId]) REFERENCES [Sistema] ([Id]);
 
 ALTER TABLE [Menu]
-ADD FOREIGN KEY ([ModuloId]) REFERENCES [Modulo] ([Id])
+ADD FOREIGN KEY ([ModuloId]) REFERENCES [Modulo] ([Id]);
 
 ALTER TABLE [UsuarioRol]
-ADD FOREIGN KEY ([RolId]) REFERENCES [Rol] ([Id])
+ADD FOREIGN KEY ([RolId]) REFERENCES [Rol] ([Id]);
 
 ALTER TABLE [UsuarioRol]
-ADD FOREIGN KEY ([UsuarioId]) REFERENCES [Usuario] ([Id])
+ADD FOREIGN KEY ([UsuarioId]) REFERENCES [Usuario] ([Id]);
 
 ALTER TABLE [ConfigMenuRol]
-ADD FOREIGN KEY ([RolId]) REFERENCES [Rol] ([Id])
+ADD FOREIGN KEY ([RolId]) REFERENCES [Rol] ([Id]);
 
 ALTER TABLE [ConfigMenuRol]
-ADD FOREIGN KEY ([MenuId]) REFERENCES [Menu] ([Id])
+ADD FOREIGN KEY ([MenuId]) REFERENCES [Menu] ([Id]);
 
 ALTER TABLE [RolPermisos]
-ADD FOREIGN KEY ([RolId]) REFERENCES [Rol] ([Id])
+ADD FOREIGN KEY ([RolId]) REFERENCES [Rol] ([Id]);
 
 ALTER TABLE [RolPermisos]
-ADD FOREIGN KEY ([PermisoId]) REFERENCES [Permisos] ([Id])
+ADD FOREIGN KEY ([PermisoId]) REFERENCES [Permisos] ([Id]);
 
 ALTER TABLE [UnidadOrganizacionalUsuario]
-ADD FOREIGN KEY ([UnidadOrganizacionalId]) REFERENCES [UnidadOrganizacional] ([Id])
+ADD FOREIGN KEY ([UnidadOrganizacionalId]) REFERENCES [UnidadOrganizacional] ([Id]);
 
 ALTER TABLE [UnidadOrganizacionalUsuario]
-ADD FOREIGN KEY ([Id]) REFERENCES [Usuario] ([Id])
+ADD FOREIGN KEY ([Id]) REFERENCES [Usuario] ([Id]);
 
 ALTER TABLE [UnidadOrganizacionalSistema]
-ADD FOREIGN KEY ([UnidadOrganizacionalId]) REFERENCES [UnidadOrganizacional] ([Id])
+ADD FOREIGN KEY ([UnidadOrganizacionalId]) REFERENCES [UnidadOrganizacional] ([Id]);
 
 ALTER TABLE [MostrarMenu]
-ADD FOREIGN KEY ([MenuId]) REFERENCES [Menu] ([Id])
+ADD FOREIGN KEY ([MenuId]) REFERENCES [Menu] ([Id]);
 
 ALTER TABLE [UnidadOrganizacionalSistema]
-ADD FOREIGN KEY ([SistemaId]) REFERENCES [Sistema] ([Id])
+ADD FOREIGN KEY ([SistemaId]) REFERENCES [Sistema] ([Id]);
 
 ALTER TABLE [MostrarMenu]
-ADD FOREIGN KEY ([UnidadOrganizacionalId]) REFERENCES [UnidadOrganizacional] ([Id])
+ADD FOREIGN KEY ([UnidadOrganizacionalId]) REFERENCES [UnidadOrganizacional] ([Id]);
