@@ -1,6 +1,8 @@
 import { container } from "@src/config";
 import { Router } from "express";
 import { SistemaController } from './sistema.controller';
+import { schemaValition } from "../middlewares/validation.middlware";
+import { CreateSistemaSCHEMA } from "@src/domain/sistema/dtos/create-sistema.dto";
 
 /**
  * ROUTE: api/sistemas/
@@ -10,7 +12,7 @@ export class SistemaRoutes {
 		const router = Router();
 		const sistemaController = container.resolve<SistemaController>("sistemaController");
 
-		router.post("/create", sistemaController.create);
+		router.post("/create",[schemaValition(CreateSistemaSCHEMA)], sistemaController.create);
 		router.post("/addUnidadOrganizativa", sistemaController.addUnidadOrganizacionDeSistema)
 		router.get("/all", sistemaController.getAll);
 		router.get("/:id", sistemaController.getOne);

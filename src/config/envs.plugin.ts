@@ -1,15 +1,10 @@
-import "dotenv/config";
-
-// export const envs = {
-// 	PORT: env.get("PORT").required().asInt(),
-// 	PUBLIC_PATH: env.get("PUBLIC_PATH").required().asString(),
-// 	POSTGRES_URL: env.get("POSTGRES_URL").required().asString(),
-// 	JWT_SEED: env.get("JWT_SEED").required().asString(),
-// };
-
-
-// // src/services/envConfigService.ts
+import { config } from "dotenv";
 import * as env from 'env-var';
+
+const envs = process.env.NODE_ENV || 'dev';
+
+config({ path: `.env.${envs}` });
+
 
 export class EnvConfigService {
   public get port(): number {
@@ -29,3 +24,4 @@ export class EnvConfigService {
   }
 }
 
+  

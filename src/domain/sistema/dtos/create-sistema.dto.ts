@@ -1,9 +1,21 @@
-export interface CreateSistemaDTO {
-    titulo: string,
-    descripcion: string,
-    color: string,
-    url: string,
-    imagen: string
+import { z } from "zod"
 
-    unidadOrganizacionalIds: number[]
-}
+const titulo = z.string();
+const descripcion = z.string();
+const color = z.string();
+const url = z.string();
+const imagen = z.string();
+const unidadOrganizacionalIds = z.array(z.number().min(1));
+
+export const CreateSistemaSCHEMA = z.object({
+    body: z.object({
+        titulo,
+        descripcion,
+        color,
+        url,
+        imagen,
+        unidadOrganizacionalIds
+    })
+})
+
+export type CreateSistemaDTO = z.infer<typeof CreateSistemaSCHEMA>["body"]
