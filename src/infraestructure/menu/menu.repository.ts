@@ -147,10 +147,10 @@ export class MenuRepository implements IMenuRepository {
 					r.Id rolId
 
 				FROM Menu m 
-					inner join Modulo m2 on m.ModuloId  = m2.Id
+					left join Modulo m2 on m.ModuloId  = m2.Id
 					left JOIN ConfigMenuRol cmr on cmr.MenuId  = m.Id 
-					left JOIN Rol r on r.Id  = cmr.RolId 
-				WHERE m2.Id = @moduloId AND (r.Id = @rolId OR r.Id IS NULL);
+					left JOIN Rol r on r.Id  = cmr.RolId and cmr.RolId = @rolId
+				WHERE m2.Id = @moduloId;
 		`);
 
 		return recordset.map((rawSql) => toMenuRol(rawSql))
@@ -167,10 +167,10 @@ export class MenuRepository implements IMenuRepository {
 					m.Url url,
 					uo.Id unidadOrganizativaId
 				FROM  Menu m
-					inner join Modulo m2 on m.ModuloId = m2.Id  
-					LEFT  JOIN MostrarMenu mm on mm.MenuId = m.Id
+					left join Modulo m2 on m.ModuloId = m2.Id  
+					LEFT  JOIN MostrarMenu mm on mm.MenuId = m.Id and mm.UnidadOrganizacionalId = @unidadOrganizacionalId
 					LEFT  JOIN UnidadOrganizacional uo on uo.Id = mm.UnidadOrganizacionalId 
-				WHERE m2.Id = @moduloId AND (uo.Id = @unidadOrganizacionalId or uo.Id is NULL)
+				WHERE m2.Id = @moduloId
 		`);
 		return recordset.map((rawSql) => toMenuUnidadOrganizativa(rawSql));
 	};
