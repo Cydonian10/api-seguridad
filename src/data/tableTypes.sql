@@ -1,7 +1,7 @@
-CREATE
-TYPE UnidadOrganizacionalTableType AS
+CREATE 
+TYPE UnidadOrganizacionalIdTableType AS
 TABLE (
-    unidadOrganizacionalId int NULL
+    [Id] int NULL
 );
 
 CREATE
@@ -25,3 +25,7 @@ TYPE UnidadesOrganizativaUsuarioTableType AS
 TABLE (
     [unidadesOrganizacionalesId] INT
 );
+
+CREATE TYPE RolesIdTableType AS TABLE (
+	[Id] INT  
+)

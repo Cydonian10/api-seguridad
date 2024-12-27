@@ -1,7 +1,7 @@
 import { container } from "@src/config";
 import { Router } from "express";
 import { SistemaController } from './sistema.controller';
-import { schemaValition } from "../middlewares/validation.middlware";
+import { schemaValition } from "../middlewares/validation.middleware";
 import { CreateSistemaSCHEMA } from "@src/domain/sistema/dtos/create-sistema.dto";
 
 /**

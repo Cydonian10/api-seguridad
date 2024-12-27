@@ -153,21 +153,46 @@ export class UsuarioRepository implements IUsuarioRepository {
 		
         return toOperationResult(recordset[0])
 	};
-	upsertUnidadesOrganizativas = (upsertDTO: UpsertUnidadOrganizativaIdDTO): Promise<OperationResult> => {
-		throw new Error("Not implementent");
+
+	upsertUnidadesOrganizativas = async (upsertDTO: UpsertUnidadOrganizativaIdDTO): Promise<OperationResult> => {
+		const { idUsuario,unidadOrganizativaId } = upsertDTO
+		const request = await this.databasePool.getPool()
+		const { recordset } = await request
+			.input("IdUsuario", Int, idUsuario)
+			.input("IdUnidadOrganizativa", Int, unidadOrganizativaId).query<OperationResultRaw>(`
+				DECLARE @UsuarioUnidadId INT;
+
+					SELECT @UsuarioUnidadId = Id FROM UnidadOrganizacionalUsuario 
+						WHERE UsuarioId = @IdUsuario AND UnidadOrganizacionalId = @IdUnidadOrganizativa
+						
+					IF @UsuarioUnidadId IS NOT NULL
+					BEGIN
+						SELECT 1 AS Result, 'Usuario ya tiene unidad organizativa' AS Message; 
+						RETURN;
+					END
+
+					INSERT INTO UnidadOrganizacionalUsuario (UsuarioId, UnidadOrganizacionalId)
+						VALUES (@IdUsuario , @IdUnidadOrganizativa)
+
+					SELECT SCOPE_IDENTITY() AS Id, 'Unidad Organizativa Agregado correctamente' as Message, 0 as Result 
+			`);
+
+			return toOperationResult(recordset[0])
+
 	};
 	getAll = async (filtroDTO: FiltroUsuarioDTO): Promise<Usuario[]> => {
 		const { unidadOrganizativas , roles } = filtroDTO
+		
 		const request = await this.databasePool.getPool()
 
-		const unidadesOrganizativaUsuarioTableType = new Table("UnidadesOrganizativaUsuarioTableType")
-		unidadesOrganizativaUsuarioTableType.columns.add("unidadesOrganizacionalesId", Int)
+		const unidadesOrganizativaUsuarioTableType = new Table("UnidadOrganizacionalIdTableType");
+		unidadesOrganizativaUsuarioTableType.columns.add("Id", Int)
 		unidadOrganizativas!.forEach((id) => {
 			unidadesOrganizativaUsuarioTableType.rows.add(+id)
 		})
 
-		const roleIdUsuarioTableType = new Table("RolUsuarioTableType")
-		roleIdUsuarioTableType.columns.add("idRol", Int)
+		const roleIdUsuarioTableType = new Table("RolesIdTableType");
+		roleIdUsuarioTableType.columns.add("Id", Int)
 		roles!.forEach((id) => {
 			roleIdUsuarioTableType.rows.add(+id)
 		})
@@ -175,8 +200,7 @@ export class UsuarioRepository implements IUsuarioRepository {
 
 		const { recordset } = await request
 			.input("Unidades", unidadesOrganizativaUsuarioTableType)
-			.input("Roles", roleIdUsuarioTableType)
-			.query<UsuarioRawSql>(`
+			.input("Roles", roleIdUsuarioTableType).query<UsuarioRawSql>(`
 				SELECT 	
 					u.id id,
 					u.Nombre nombre,
@@ -196,8 +220,8 @@ export class UsuarioRepository implements IUsuarioRepository {
 					inner join UsuarioRol ur on ur.UsuarioId  = u.Id 
 					inner join Rol r on ur.RolId = r.Id 
    				WHERE 
-					uou.UnidadOrganizacionalId IN (SELECT unidadesOrganizacionalesId FROM @Unidades) or
-					r.Id IN (SELECT idRol FROM @Roles) 
+					(NOT EXISTS (SELECT 1 FROM @Unidades) OR uou.UnidadOrganizacionalId IN (SELECT Id FROM @Unidades)) AND
+    			(NOT EXISTS (SELECT 1 FROM @Roles) OR r.Id IN (SELECT Id FROM @Roles))
 				GROUP BY u.id,
 					u.Nombre,
 					u.ApellidoMaterno,
@@ -209,7 +233,7 @@ export class UsuarioRepository implements IUsuarioRepository {
 					uo.Id,
 					uo.Nombre,
 					uo.Abreviatura;
-			`)
+			`);
 		return toUsuario(recordset)
 	};
 	detalle = (): Promise<Usuario> => {

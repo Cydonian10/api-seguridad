@@ -1,3 +1,6 @@
+import { numberSchema } from "@src/domain/common/dtos/number.dto";
+import { z } from "zod";
+
 export interface UpdateUsuarioDTO {
 	nombre: string;
 	apellidoMaterno: string;
@@ -16,7 +19,10 @@ export interface UpsertUsuarioRolDTO {
 	estado?: boolean
 }
 
-export interface UpsertUnidadOrganizativaIdDTO {
-	idUsuario: number,
-	unidadOrganizativaId: number
-}
+export const UpsertUnidadOrganizativaIdSchema = z.object({
+	body: z.object({
+		idUsuario: numberSchema,
+		unidadOrganizativaId: numberSchema,
+	}),
+});
+export type UpsertUnidadOrganizativaIdDTO = z.infer<typeof UpsertUnidadOrganizativaIdSchema>["body"]

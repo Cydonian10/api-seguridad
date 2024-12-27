@@ -18,4 +18,4 @@ export function toOperationResult({ Id, Message, Result }: OperationResultRaw): 
         message: Message,
         id: Id
     }
-}
+}1

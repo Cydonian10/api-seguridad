@@ -18,3 +18,4 @@ export interface IMenuRepository {
 	getMenuRol: (moduloId: number, rolId: number) => Promise<Menu[]>;
 	getMostrarMenuUnidadOrganizacional: (moduloId: number, unidadOrganizacionalId: number) => Promise<Menu[]>;
 }
+
