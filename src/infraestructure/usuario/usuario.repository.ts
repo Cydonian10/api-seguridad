@@ -23,26 +23,37 @@ export class UsuarioRepository implements IUsuarioRepository {
 
 	create = async (createDTO: CreateUsuarioDTO): Promise<OperationResult> => {
 		console.log(createDTO);
-		const { apellidoMaterno, apellidoPaterno, correo, imagen, nombre, password, roles, tokenRecuperacion = null, unidadesOrganizacionalesId } = createDTO
-		
+		const {
+			apellidoMaterno,
+			apellidoPaterno,
+			correo,
+			imagen,
+			nombre,
+			password,
+			roles,
+			tokenRecuperacion = null,
+			unidadesOrganizacionalesId,
+		} = createDTO;
+
 		const rolesUsuarioTableType = new Table("RolesUsuarioTableType");
 		rolesUsuarioTableType.columns.add("idRol", Int);
 		rolesUsuarioTableType.columns.add("fechaAsignacion", Date);
 		rolesUsuarioTableType.columns.add("expiracion", Date);
 
-		roles.forEach(({idRol, fechaAsignacion, expiracion}) => {
+		roles.forEach(({ idRol, fechaAsignacion, expiracion }) => {
 			rolesUsuarioTableType.rows.add(idRol, fechaAsignacion, expiracion);
 		});
 
-		const unidadesOrganizativaUsuarioTableType = new Table("UnidadesOrganizativaUsuarioTableType")
-		unidadesOrganizativaUsuarioTableType.columns.add("unidadesOrganizacionalesId",Int)
+		const unidadesOrganizativaUsuarioTableType = new Table("UnidadesOrganizativaUsuarioTableType");
+		unidadesOrganizativaUsuarioTableType.columns.add("unidadesOrganizacionalesId", Int);
 		unidadesOrganizacionalesId.forEach((id) => {
-			unidadesOrganizativaUsuarioTableType.rows.add(id)
-		})
+			unidadesOrganizativaUsuarioTableType.rows.add(id);
+		});
 
-		const request = await this.databasePool.getPool()
+		const request = await this.databasePool.getPool();
 
-		const { recordset } = await request.input("ApellidoMaterno", VarChar(50), apellidoMaterno)
+		const { recordset } = await request
+			.input("ApellidoMaterno", VarChar(50), apellidoMaterno)
 			.input("ApellidoPaterno", VarChar(50), apellidoPaterno)
 			.input("Correo", VarChar(255), correo)
 			.input("Imagen", VarChar(MAX), imagen)
@@ -50,8 +61,7 @@ export class UsuarioRepository implements IUsuarioRepository {
 			.input("Password", VarChar(100), password)
 			.input("TokenRecuperacion", VarChar(100), tokenRecuperacion)
 			.input("Roles", rolesUsuarioTableType)
-			.input("Unidades", unidadesOrganizativaUsuarioTableType)
-			.query<OperationResultRaw>(`
+			.input("Unidades", unidadesOrganizativaUsuarioTableType).query<OperationResultRaw>(`
 				-- Declaración de variables
 				-- DECLARE @Roles RolesUsuarioTableType;
 				-- DECLARE @Unidades UnidadOrganizacionalTableType;
@@ -83,23 +93,23 @@ export class UsuarioRepository implements IUsuarioRepository {
 				END
 
 				SELECT @IdUsuario as Id, 'Usuario insertado correctamente' AS Message;
-			`)
-		return toOperationResult(recordset[0])
+			`);
+		return toOperationResult(recordset[0]);
 	};
 	update = async (updateDTO: UpdateUsuarioDTO, idUsuario: Usuario["id"]): Promise<OperationResult> => {
-		const { apellidoMaterno, apellidoPaterno, correo, imagen, nombre, password, tokenRecuperacion = null } = updateDTO
+		const { apellidoMaterno, apellidoPaterno, correo, imagen, nombre, password, tokenRecuperacion = null } = updateDTO;
 
-		const request = await this.databasePool.getPool()
+		const request = await this.databasePool.getPool();
 
-		const { recordset } = await request.input("apellidoMaterno", VarChar(50), apellidoMaterno)
+		const { recordset } = await request
+			.input("apellidoMaterno", VarChar(50), apellidoMaterno)
 			.input("ApellidoPaterno", VarChar(50), apellidoPaterno)
 			.input("Correo", VarChar(255), correo)
 			.input("Imagen", VarChar(MAX), imagen)
 			.input("Nombre", VarChar(50), nombre)
 			.input("Password", VarChar(100), password)
 			.input("IdUsuario", Int, idUsuario)
-			.input("TokenRecuperacion", VarChar(MAX), tokenRecuperacion)
-			.query<OperationResultRaw>(`
+			.input("TokenRecuperacion", VarChar(MAX), tokenRecuperacion).query<OperationResultRaw>(`
 				UPDATE prueba.dbo.Usuario
 				SET Nombre = COALESCE(@Nombre, Nombre),
 					ApellidoMaterno = COALESCE(@ApellidoMaterno, ApellidoMaterno), 
@@ -111,63 +121,70 @@ export class UsuarioRepository implements IUsuarioRepository {
 				WHERE Id=@IdUsuario;
 
 				SELECT @IdUsuario AS Id, 'Updated successful' AS Message;
-			`)
+			`);
 
-		return toOperationResult(recordset[0])
+		return toOperationResult(recordset[0]);
 	};
 	delete = (idUsuario: Usuario["id"]): Promise<OperationResult> => {
 		throw new Error("Not implementent");
 	};
+
 	upsertRoles = async (upsertDTO: UpsertUsuarioRolDTO): Promise<OperationResult> => {
-		const { expiracion,fechaAsignacion,idRol, idUsuario,estado } = upsertDTO
-		
-		const request = await this.databasePool.getPool()
+		const { expiracion, fechaAsignacion, idRol, idUsuario, estado } = upsertDTO;
+
+		const request = await this.databasePool.getPool();
 		const { recordset } = await request
 			.input("Expiracion", Date, expiracion)
 			.input("FechaAsignacion", Date, fechaAsignacion)
 			.input("IdRol", Int, idRol)
 			.input("Estado", Bit, estado)
-			.input("IdUsuario", Int, idUsuario)
-			.query<OperationResultRaw>(`
+			.input("IdUsuario", Int, idUsuario).query<OperationResultRaw>(`
 				DECLARE @UsuarioRolId INT;
 
-				SELECT * FROM UsuarioRol WHERE UsuarioId = @IdUsuario AND RolId = @IdRol
+				SELECT @UsuarioRolId = Id FROM UsuarioRol WHERE UsuarioId = @IdUsuario AND RolId = @IdRol
 
 				IF @UsuarioRolId IS NOT NULL
-						begin
+				BEGIN
 					UPDATE prueba.dbo.UsuarioRol
 						SET
 							FechaAsigancion = COALESCE(@FechaAsignacion, FechaAsigancion),
 							Expiracion = COALESCE(@Expiracion, Expiracion),
 							Estado = COALESCE(@Estado, Estado)
 					WHERE Id = @UsuarioRolId;
-						end
-				else
-					BEGIN
+					SELECT @IdUsuario AS Id, 'Se actulizo rol satisfactoriamente' AS Message;
+				END
+				ELSE
+				BEGIN
 					INSERT INTO prueba.dbo.UsuarioRol
 						(RolId, UsuarioId, FechaAsigancion, Expiracion, Estado)
-					VALUES(@IdRol, @UsuarioId, @FechaAsignacion, @Expiracion, 1);
-					END	
-			    SELECT @IdUsuario AS Id, 'Se agrego rol satisfactoriamente' AS Message;
-			`)
-		
-        return toOperationResult(recordset[0])
+					VALUES(@IdRol, @IdUsuario, @FechaAsignacion, @Expiracion, 1);
+					SELECT @IdUsuario AS Id, 'Se agrego rol satisfactoriamente' AS Message;
+				END	
+			`);
+
+		return toOperationResult(recordset[0]);
 	};
 
 	upsertUnidadesOrganizativas = async (upsertDTO: UpsertUnidadOrganizativaIdDTO): Promise<OperationResult> => {
-		const { idUsuario,unidadOrganizativaId } = upsertDTO
-		const request = await this.databasePool.getPool()
+		const { idUsuario, unidadOrganizativaId } = upsertDTO;
+		const request = await this.databasePool.getPool();
 		const { recordset } = await request
 			.input("IdUsuario", Int, idUsuario)
 			.input("IdUnidadOrganizativa", Int, unidadOrganizativaId).query<OperationResultRaw>(`
-				DECLARE @UsuarioUnidadId INT;
+					DECLARE @UsuarioUnidadId INT;
 
 					SELECT @UsuarioUnidadId = Id FROM UnidadOrganizacionalUsuario 
 						WHERE UsuarioId = @IdUsuario AND UnidadOrganizacionalId = @IdUnidadOrganizativa
 						
 					IF @UsuarioUnidadId IS NOT NULL
 					BEGIN
-						SELECT 1 AS Result, 'Usuario ya tiene unidad organizativa' AS Message; 
+						UPDATE UnidadOrganizacionalUsuario
+							SET Estado = CASE 
+                        WHEN Estado = 1 THEN 0
+                        WHEN Estado = 0 THEN 1
+                     END 
+						WHERE Id = @UsuarioUnidadId;
+						SELECT SCOPE_IDENTITY() AS Id, 'Se cambio el estado de unidad organizativa' as Message, 0 as Result;
 						RETURN;
 					END
 
@@ -177,26 +194,25 @@ export class UsuarioRepository implements IUsuarioRepository {
 					SELECT SCOPE_IDENTITY() AS Id, 'Unidad Organizativa Agregado correctamente' as Message, 0 as Result 
 			`);
 
-			return toOperationResult(recordset[0])
-
+		return toOperationResult(recordset[0]);
 	};
+
 	getAll = async (filtroDTO: FiltroUsuarioDTO): Promise<Usuario[]> => {
-		const { unidadOrganizativas , roles } = filtroDTO
-		
-		const request = await this.databasePool.getPool()
+		const { unidadOrganizativas, roles } = filtroDTO;
+
+		const request = await this.databasePool.getPool();
 
 		const unidadesOrganizativaUsuarioTableType = new Table("UnidadOrganizacionalIdTableType");
-		unidadesOrganizativaUsuarioTableType.columns.add("Id", Int)
+		unidadesOrganizativaUsuarioTableType.columns.add("Id", Int);
 		unidadOrganizativas!.forEach((id) => {
-			unidadesOrganizativaUsuarioTableType.rows.add(+id)
-		})
+			unidadesOrganizativaUsuarioTableType.rows.add(+id);
+		});
 
 		const roleIdUsuarioTableType = new Table("RolesIdTableType");
-		roleIdUsuarioTableType.columns.add("Id", Int)
+		roleIdUsuarioTableType.columns.add("Id", Int);
 		roles!.forEach((id) => {
-			roleIdUsuarioTableType.rows.add(+id)
-		})
-		
+			roleIdUsuarioTableType.rows.add(+id);
+		});
 
 		const { recordset } = await request
 			.input("Unidades", unidadesOrganizativaUsuarioTableType)
@@ -213,6 +229,7 @@ export class UsuarioRepository implements IUsuarioRepository {
 					uo.Id idUnidadOrganizacional,
 					uo.Nombre unidadOrganizacional,
 					uo.Abreviatura unidadOrganizacionAbreviatura,
+					uou.Estado unidadOrganizacionEstado,
 					COUNT(r.Id) cantidadRoles
 				FROM Usuario u
 					inner join UnidadOrganizacionalUsuario uou on uou.UsuarioId = u.Id 
@@ -232,9 +249,10 @@ export class UsuarioRepository implements IUsuarioRepository {
 					u.TokenRecuperacion,
 					uo.Id,
 					uo.Nombre,
-					uo.Abreviatura;
+					uo.Abreviatura,
+					uou.Estado;
 			`);
-		return toUsuario(recordset)
+		return toUsuario(recordset);
 	};
 	detalle = (): Promise<Usuario> => {
 		throw new Error("Not implementent");

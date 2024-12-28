@@ -12,6 +12,10 @@ CREATE TABLE [UnidadOrganizacionalUsuario] (
     [UnidadOrganizacionalId] int
 )
 
+ALTER TABLE [UnidadOrganizacionalUsuario]
+ADD Estado VARCHAR(50) NOT NULL DEFAULT 'Activo'
+CHECK (Estado IN ('Activo', 'Inactivo', 'Neutro'));
+
 CREATE TABLE [UnidadOrganizacionalSistema] (
     [Id] int PRIMARY KEY IDENTITY(1, 1),
     [UnidadOrganizacionalId] int,

@@ -1,5 +1,5 @@
 import { numberSchema } from "@src/domain/common/dtos/number.dto";
-import { z } from "zod";
+import { boolean, z } from "zod";
 
 export interface UpdateUsuarioDTO {
 	nombre: string;
@@ -11,13 +11,16 @@ export interface UpdateUsuarioDTO {
 	tokenRecuperacion: string | null;
 }
 
-export interface UpsertUsuarioRolDTO {
-	idUsuario?: number,
-	idRol?: number;
-	fechaAsignacion?: Date;
-	expiracion?: Date;
-	estado?: boolean
-}
+export const UpsertUsuarioRolSchema = z.object({
+	body: z.object({
+		idUsuario: numberSchema.optional(),
+		idRol: numberSchema.optional(),
+		fechaAsignacion: z.string().optional(),
+		expiracion: z.string().optional(),
+		estado: z.boolean(),
+	}),
+});
+export type UpsertUsuarioRolDTO = z.infer<typeof UpsertUsuarioRolSchema>["body"];
 
 export const UpsertUnidadOrganizativaIdSchema = z.object({
 	body: z.object({
@@ -25,4 +28,4 @@ export const UpsertUnidadOrganizativaIdSchema = z.object({
 		unidadOrganizativaId: numberSchema,
 	}),
 });
-export type UpsertUnidadOrganizativaIdDTO = z.infer<typeof UpsertUnidadOrganizativaIdSchema>["body"]
+export type UpsertUnidadOrganizativaIdDTO = z.infer<typeof UpsertUnidadOrganizativaIdSchema>["body"];

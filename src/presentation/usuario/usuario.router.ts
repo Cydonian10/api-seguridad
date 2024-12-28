@@ -3,7 +3,7 @@ import { Router } from "express";
 import { UsuarioController } from "./usuario.controller";
 import { schemaValition } from "../middlewares/validation.middleware";
 import { FiltroUsuarioSchema } from "@src/domain/usuario/dtos/filtro-usuario.dto";
-import { UpsertUnidadOrganizativaIdSchema } from "@src/domain/usuario/dtos/update-usuario.dto";
+import { UpsertUnidadOrganizativaIdSchema, UpsertUsuarioRolSchema } from "@src/domain/usuario/dtos/update-usuario.dto";
 
 /**
  * ROUTE: api/usuarios/
@@ -16,6 +16,7 @@ export class UsuarioRoutes {
 		router.post("/create", usuarioController.create);
 		router.get("/all", [schemaValition(FiltroUsuarioSchema)], usuarioController.getAll);
 		router.get("/:id");
+		router.put("/upsert/rol", [schemaValition(UpsertUsuarioRolSchema)], usuarioController.upsertRoles);
 		router.put(
 			"/upsert/unidadOrganizativa",
 			[schemaValition(UpsertUnidadOrganizativaIdSchema)],
