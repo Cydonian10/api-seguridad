@@ -13,8 +13,7 @@ CREATE TABLE [UnidadOrganizacionalUsuario] (
 )
 
 ALTER TABLE [UnidadOrganizacionalUsuario]
-ADD Estado VARCHAR(50) NOT NULL DEFAULT 'Activo'
-CHECK (Estado IN ('Activo', 'Inactivo', 'Neutro'));
+ADD Estado bit NOT NULL DEFAULT 0
 
 CREATE TABLE [UnidadOrganizacionalSistema] (
     [Id] int PRIMARY KEY IDENTITY(1, 1),
